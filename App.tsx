@@ -103,11 +103,22 @@ export default function App(): React.ReactElement {
   }, [stations, searchQuery, activeCategory, favorites]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-        {/* Subtle Background Pattern */}
-        <div className="absolute top-0 left-0 right-0 h-96 bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none z-0"></div>
+    <div className="min-h-screen font-sans selection:bg-ph-blue/20">
+        {/* Background Layer (Z-Index: 0) */}
+        <div className="fixed inset-0 z-0 w-full h-full overflow-hidden bg-white">
+            {/* The Background Image - Full Opacity */}
+            <img 
+                src="/background.webp" 
+                alt="Background" 
+                className="w-full h-full object-cover object-center opacity-100"
+            />
+            
+            {/* Minimal Overlay - just enough to ensure text doesn't blend if image is busy */}
+            <div className="absolute inset-0 bg-white/30 backdrop-blur-[2px]"></div>
+        </div>
 
-        <div className="z-10 relative flex-grow flex flex-col">
+        {/* Content Layer (Z-Index: 10) */}
+        <div className="relative z-10 flex flex-col min-h-screen">
             <Header />
             
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex-grow pt-8">
@@ -130,10 +141,10 @@ export default function App(): React.ReactElement {
                 {/* Main Content */}
                 <div className="pb-32">
                     <div className="flex items-center justify-between mb-6 px-1">
-                        <h2 className="text-xl font-heading font-semibold text-slate-800">
+                        <h2 className="text-xl font-heading font-semibold text-slate-800 backdrop-blur-md bg-white/60 inline-block px-4 py-1.5 rounded-xl border border-white/50 shadow-sm">
                             {activeCategory === 'All' ? 'All Stations' : activeCategory}
                         </h2>
-                        <span className="text-sm font-medium text-slate-400 bg-white px-3 py-1 rounded-full shadow-sm border border-slate-100">
+                        <span className="text-sm font-medium text-slate-500 bg-white/80 backdrop-blur px-3 py-1 rounded-full shadow-sm border border-slate-100">
                             {filteredStations.length} Stations
                         </span>
                     </div>
@@ -151,15 +162,19 @@ export default function App(): React.ReactElement {
             </main>
         </div>
       
+        {/* Floating Player (Z-Index: 40) */}
         {currentStation && (
-            <AudioPlayer
-            station={currentStation}
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            volume={volume}
-            />
+            <div className="relative z-40">
+                <AudioPlayer
+                station={currentStation}
+                isPlaying={isPlaying}
+                onPlayPause={handlePlayPause}
+                volume={volume}
+                />
+            </div>
         )}
 
+        {/* Full Screen Overlay (Z-Index: 50) */}
         {selectedStation && (
             <StationDetailOverlay
             station={selectedStation}

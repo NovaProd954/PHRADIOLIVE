@@ -97,6 +97,31 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ station, on
     };
   }, []);
 
+  const handleShare = async () => {
+    const shareData = {
+      title: station.name,
+      text: `Listen to ${station.name} live on PH Radio Live!`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        alert("Station link copied to clipboard!");
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+        alert("Sharing is not supported on this device.");
+      }
+    }
+  };
+
   return (
     <div 
         className="fixed inset-0 z-50 flex flex-col font-sans text-white animate-fade-in"
@@ -189,7 +214,11 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ station, on
                             <StarIcon className={`w-7 h-7 sm:w-8 sm:h-8 ${isFavorite ? 'fill-current' : ''}`} />
                         </button>
 
-                        <button className="text-white/60 hover:text-white transition-colors p-2" title="Share">
+                        <button 
+                            onClick={handleShare}
+                            className="text-white/60 hover:text-white transition-colors p-2" 
+                            title="Share"
+                        >
                             <ShareIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                         </button>
                     </div>
