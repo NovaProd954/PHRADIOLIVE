@@ -19,6 +19,7 @@ export default function App(): React.ReactElement {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [volume, setVolume] = useState<number>(1);
+  const [bgError, setBgError] = useState<boolean>(false);
   
   // Initialize favorites from localStorage
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -106,15 +107,18 @@ export default function App(): React.ReactElement {
     <div className="min-h-screen font-sans selection:bg-ph-blue/20">
         {/* Background Layer (Z-Index: 0) */}
         <div className="fixed inset-0 z-0 w-full h-full overflow-hidden bg-white">
-            {/* The Background Image - Full Opacity */}
-            <img 
-                src="/background.webp" 
-                alt="Background" 
-                className="w-full h-full object-cover object-center opacity-100"
-            />
+            {/* The Background Image - Full Opacity with Fallback */}
+            {!bgError && (
+              <img 
+                  src="/background.webp" 
+                  alt="Background" 
+                  className="w-full h-full object-cover object-center opacity-100 transition-opacity duration-500"
+                  onError={() => setBgError(true)}
+              />
+            )}
             
             {/* Minimal Overlay - just enough to ensure text doesn't blend if image is busy */}
-            <div className="absolute inset-0 bg-white/30 backdrop-blur-[2px]"></div>
+            <div className={`absolute inset-0 ${bgError ? 'bg-slate-50' : 'bg-white/30 backdrop-blur-[2px]'}`}></div>
         </div>
 
         {/* Content Layer (Z-Index: 10) */}

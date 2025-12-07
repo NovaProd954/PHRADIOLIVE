@@ -45,9 +45,10 @@ const LiveClock: React.FC = () => {
 interface StationLogoProps {
     station: Station;
     className?: string;
+    isPlaying?: boolean;
 }
 
-const StationLogo: React.FC<StationLogoProps> = ({ station, className }) => {
+const StationLogo: React.FC<StationLogoProps> = ({ station, className, isPlaying }) => {
     const [imgError, setImgError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -78,10 +79,10 @@ const StationLogo: React.FC<StationLogoProps> = ({ station, className }) => {
                 <img
                     src={station.favicon}
                     alt={`${station.name} logo`}
-                    className="w-full h-full object-contain p-4 sm:p-8"
+                    className={`w-full h-full object-contain p-4 sm:p-8 transition-transform duration-700 ${isPlaying ? 'animate-music-pulse' : ''}`}
                 />
             ) : (
-                <RadioIcon className="w-1/2 h-1/2 text-slate-300" />
+                <RadioIcon className={`w-1/2 h-1/2 text-slate-300 ${isPlaying ? 'animate-pulse' : ''}`} />
             )}
         </div>
     );
@@ -255,7 +256,11 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ station, on
 
                 {/* Right Column: Logo */}
                 <div className="w-full md:w-1/2 flex flex-col items-center justify-center animate-scale-in">
-                    <StationLogo station={station} className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 shadow-2xl" />
+                    <StationLogo 
+                        station={station} 
+                        className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 shadow-2xl" 
+                        isPlaying={isPlaying} 
+                    />
                     
                     {/* Visual dash indicator from reference image */}
                     <div className="w-8 h-1 bg-white/40 rounded-full mt-12 hidden md:block"></div>
