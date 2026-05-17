@@ -15,7 +15,7 @@ interface AudioPlayerProps {
   volume: number;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onPlayPause, onPlay, onPause, volume }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onPlayPause, volume }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isBuffering, setIsBuffering] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -125,10 +125,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
                     )}
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
-                    <p className={`font-heading font-bold truncate text-sm sm:text-base leading-tight ${mode === 'morning' ? 'text-slate-800' : 'text-white'}`}>
+                    <p className="font-heading font-bold truncate ${mode === 'morning' ? 'text-slate-800' : 'text-white'} text-sm sm:text-base leading-tight">
                         {station.name}
                     </p>
-                    <div className={`flex items-center gap-2 text-xs truncate mt-0.5 ${mode === 'morning' ? 'text-slate-500' : 'text-white/70'}`}>
+                    <div className="flex items-center gap-2 text-xs truncate ${mode === 'morning' ? 'text-slate-500' : 'text-white/70'} mt-0.5">
                          {isBuffering ? (
                              <span className="text-ph-blue font-medium flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-ph-blue animate-pulse"></span>
