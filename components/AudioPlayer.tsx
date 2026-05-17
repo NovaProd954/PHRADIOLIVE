@@ -10,6 +10,8 @@ interface AudioPlayerProps {
   station: Station;
   isPlaying: boolean;
   onPlayPause: () => void;
+  onPlay: () => void;
+  onPause: () => void;
   volume: number;
 }
 
@@ -42,11 +44,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
       });
 
       // Update action handlers
-      navigator.mediaSession.setActionHandler('play', onPlayPause);
-      navigator.mediaSession.setActionHandler('pause', onPlayPause);
-      navigator.mediaSession.setActionHandler('stop', onPlayPause);
+      navigator.mediaSession.setActionHandler('play', onPlay);
+      navigator.mediaSession.setActionHandler('pause', onPause);
+      navigator.mediaSession.setActionHandler('stop', onPause);
     }
-  }, [station, onPlayPause]);
+  }, [station, onPlay, onPause]);
 
   useEffect(() => {
     if ('mediaSession' in navigator) {
@@ -166,7 +168,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
                 </button>
             </div>
       </div>
-      <audio ref={audioRef} preload="auto" hidden crossOrigin="anonymous" />
+      <audio ref={audioRef} preload="auto" playsInline hidden crossOrigin="anonymous" />
     </div>
   );
 };

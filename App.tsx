@@ -71,6 +71,14 @@ export default function App(): React.ReactElement {
     }
   }, [currentStation]);
 
+  const handlePlay = useCallback(() => {
+    if (currentStation) setIsPlaying(true);
+  }, [currentStation]);
+
+  const handlePause = useCallback(() => {
+    if (currentStation) setIsPlaying(false);
+  }, [currentStation]);
+
   const handleToggleFavorite = useCallback((stationId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     
@@ -175,6 +183,8 @@ export default function App(): React.ReactElement {
                 station={currentStation}
                 isPlaying={isPlaying}
                 onPlayPause={handlePlayPause}
+                onPlay={handlePlay}
+                onPause={handlePause}
                 volume={volume}
                 />
             </div>
