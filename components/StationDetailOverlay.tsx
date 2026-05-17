@@ -23,7 +23,7 @@ interface StationDetailOverlayProps {
   onToggleFavorite: () => void;
 }
 
-const LiveClock: React.FC = () => {
+const LiveClock: React.FC<{ mode: 'morning' | 'night' }> = ({ mode }) => {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const LiveClock: React.FC = () => {
   const ampm = time.getHours() >= 12 ? 'PM' : 'AM';
 
   return (
-    <div className="flex items-baseline font-heading text-white select-none">
+    <div className={`flex items-baseline font-heading select-none ${mode === 'morning' ? 'text-slate-900' : 'text-white'}`}>
       <span className="text-6xl sm:text-7xl font-bold tracking-tighter">{hours}:{minutes}</span>
       <span className="text-2xl sm:text-3xl font-medium ml-1">{ampm}</span>
     </div>
@@ -110,7 +110,10 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
       try {
         await navigator.share(shareData);
       } catch (error) {
-        console.log('Error sharing:', error);
+        const err = error as Error;
+        if (err?.name !== "AbortError") {
+          console.error('Error sharing:', error);
+        }
       }
     } else {
       // Fallback: Copy to clipboard
@@ -149,14 +152,14 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
             <div className="flex justify-between items-start w-full relative">
                 {/* Clock */}
                 <div className="z-20">
-                    <LiveClock />
+                    <LiveClock mode={mode} />
                 </div>
 
                 {/* Centered Close Button */}
                 <div className="absolute left-0 right-0 top-0 flex justify-center pointer-events-none">
                      <button 
                         onClick={onClose}
-                        className="pointer-events-auto text-white/80 hover:text-white transition-transform duration-300 hover:rotate-90 hover:scale-110 active:scale-95"
+                        className={`pointer-events-auto transition-transform duration-300 hover:rotate-90 hover:scale-110 active:scale-95 ${mode === 'morning' ? 'text-slate-700/80 hover:text-slate-900' : 'text-white/80 hover:text-white'}`}
                         aria-label="Close"
                     >
                         <CloseIcon className="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-md" />
@@ -175,28 +178,28 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                     
                     {/* Station Text Info */}
                     <div className="space-y-2 animate-slide-up">
-                        <h2 className="font-heading font-bold text-2xl sm:text-3xl md:text-4xl leading-tight text-white drop-shadow-lg">
+                        <h2 className={`font-heading font-bold text-2xl sm:text-3xl md:text-4xl leading-tight drop-shadow-lg ${mode === 'morning' ? 'text-slate-900' : 'text-white'}`}>
                             {station.name}
                         </h2>
-                        <p className="text-lg text-white/70 font-medium">
+                        <p className={`text-lg font-medium ${mode === 'morning' ? 'text-slate-700' : 'text-white/70'}`}>
                             {station.state || station.country || 'Philippines'} 
-                            {station.tags.includes('fm') ? ' - FM Radio' : ''}
+                            {(station.tags || '').toLowerCase().includes('fm') ? ' - FM Radio' : ''}
                         </p>
                     </div>
 
                     {/* Action Icons */}
                     <div className="flex items-center gap-6 sm:gap-8">
-                        <button className="text-white/60 hover:text-white transition-colors p-2" title="Cast to device">
+                        <button className={`transition-colors p-2 ${mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`} title="Cast to device">
                             <CastIcon className="w-6 h-6 sm:w-7 sm:h-7" />
                         </button>
                         
-                        <button className="text-white/60 hover:text-white transition-colors p-2" title="Notifications">
+                        <button className={`transition-colors p-2 ${mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`} title="Notifications">
                             <BellIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                         </button>
 
                         <button 
                             onClick={onPlayPause}
-                            className="group relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-white/30 hover:border-white hover:bg-white/10 transition-all active:scale-95"
+                            className={`group relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 transition-all active:scale-95 ${mode === 'morning' ? 'border-slate-500/30 hover:border-slate-700 hover:bg-white/20' : 'border-white/30 hover:border-white hover:bg-white/10'}`}
                         >
                             {/* Animated ring effect for playing state */}
                             {isPlaying && (
@@ -211,14 +214,14 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
 
                         <button 
                             onClick={onToggleFavorite}
-                            className={`p-2 transition-colors ${isFavorite ? 'text-ph-yellow' : 'text-white/60 hover:text-white'}`}
+                            className={`p-2 transition-colors ${isFavorite ? 'text-ph-yellow' : mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`}
                         >
                             <StarIcon className={`w-7 h-7 sm:w-8 sm:h-8 ${isFavorite ? 'fill-current' : ''}`} />
                         </button>
 
                         <button 
                             onClick={handleShare}
-                            className="text-white/60 hover:text-white transition-colors p-2" 
+                            className={`transition-colors p-2 ${mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`} 
                             title="Share"
                         >
                             <ShareIcon className="w-7 h-7 sm:w-8 sm:h-8" />
@@ -226,7 +229,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                     </div>
 
                     {/* Volume Slider */}
-                    <div className="w-full max-w-sm flex items-center gap-4 text-white/80">
+                    <div className={`w-full max-w-sm flex items-center gap-4 ${mode === 'morning' ? 'text-slate-700' : 'text-white/80'}`}>
                         <VolumeMuteIcon className="w-6 h-6 flex-shrink-0" />
                         <div className="relative flex-grow h-10 flex items-center">
                             <input 
@@ -237,14 +240,15 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                                 value={volume}
                                 onChange={(e) => setVolume(parseFloat(e.target.value))}
                                 className="
-                                    w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer 
+                                    w-full h-1 rounded-full appearance-none cursor-pointer 
                                     focus:outline-none
                                     [&::-webkit-slider-thumb]:appearance-none
                                     [&::-webkit-slider-thumb]:w-4
                                     [&::-webkit-slider-thumb]:h-4
                                     [&::-webkit-slider-thumb]:rounded-full
-                                    [&::-webkit-slider-thumb]:bg-white
+                                    [&::-webkit-slider-thumb]:bg-emerald-500
                                     [&::-webkit-slider-thumb]:shadow-lg
+                                    [&::-webkit-slider-runnable-track]:bg-transparent
                                     [&::-webkit-slider-thumb]:transition-transform
                                     [&::-webkit-slider-thumb]:hover:scale-125
                                 "
@@ -264,7 +268,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                     />
                     
                     {/* Visual dash indicator from reference image */}
-                    <div className="w-8 h-1 bg-white/40 rounded-full mt-12 hidden md:block"></div>
+                    <div className={`w-8 h-1 rounded-full mt-12 hidden md:block ${mode === 'morning' ? 'bg-slate-300' : 'bg-white/40'}`}></div>
                 </div>
 
             </div>

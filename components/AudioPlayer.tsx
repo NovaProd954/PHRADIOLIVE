@@ -15,10 +15,26 @@ interface AudioPlayerProps {
   volume: number;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onPlayPause, volume }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onPlayPause, onPlay, onPause, volume }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isBuffering, setIsBuffering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const getAudioErrorMessage = (audioError: MediaError | null): string => {
+    if (!audioError) return "Unavailable";
+    switch (audioError.code) {
+      case MediaError.MEDIA_ERR_ABORTED:
+        return "Playback aborted";
+      case MediaError.MEDIA_ERR_NETWORK:
+        return "Network issue";
+      case MediaError.MEDIA_ERR_DECODE:
+        return "Stream decode error";
+      case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+        return "Stream not supported";
+      default:
+        return "Unavailable";
+    }
+  };
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
@@ -67,20 +83,34 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
     };
     const handleError = (e: Event) => {
         setIsBuffering(false);
-        setError("Unavailable");
+        setError(getAudioErrorMessage(audio.error));
+        onPause();
         console.error("Audio Error:", e);
+    };
+
+    const handleStalled = () => {
+      setIsBuffering(true);
+    };
+
+    const handleEnded = () => {
+      setIsBuffering(false);
+      onPause();
     };
 
     audio.addEventListener('waiting', handleWaiting);
     audio.addEventListener('playing', handlePlaying);
     audio.addEventListener('error', handleError);
+    audio.addEventListener('stalled', handleStalled);
+    audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('waiting', handleWaiting);
       audio.removeEventListener('playing', handlePlaying);
       audio.removeEventListener('error', handleError);
+      audio.removeEventListener('stalled', handleStalled);
+      audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [onPause]);
   
   useEffect(() => {
     if (audioRef.current) {
@@ -101,15 +131,15 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
             if (playPromise !== undefined) {
                 playPromise.catch((e) => {
                     console.error("Playback failed:", e);
-                    setError("Error");
-                    // If play fails (e.g. autoplay policy), ensure UI reflects paused state if needed
+                    setError("Playback blocked");
+                    onPause();
                 });
             }
         } else {
             audioRef.current.pause();
         }
     }
-  }, [station, isPlaying]);
+  }, [station, isPlaying, onPause]);
   
   return (
     <div className="fixed bottom-4 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
@@ -125,10 +155,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
                     )}
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
-                    <p className="font-heading font-bold truncate ${mode === 'morning' ? 'text-slate-800' : 'text-white'} text-sm sm:text-base leading-tight">
+                    <p className={`font-heading font-bold truncate text-sm sm:text-base leading-tight ${mode === 'morning' ? 'text-slate-800' : 'text-white'}`}>
                         {station.name}
                     </p>
-                    <div className="flex items-center gap-2 text-xs truncate ${mode === 'morning' ? 'text-slate-500' : 'text-white/70'} mt-0.5">
+                    <div className={`flex items-center gap-2 text-xs truncate mt-0.5 ${mode === 'morning' ? 'text-slate-500' : 'text-white/70'}`}>
                          {isBuffering ? (
                              <span className="text-ph-blue font-medium flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-ph-blue animate-pulse"></span>

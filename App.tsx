@@ -20,7 +20,15 @@ export default function App(): React.ReactElement {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [volume, setVolume] = useState<number>(1);
   const [bgError, setBgError] = useState<boolean>(false);
-  const [mode, setMode] = useState<'morning' | 'night'>('morning');
+  const [mode, setMode] = useState<'morning' | 'night'>(() => {
+    try {
+      const saved = localStorage.getItem('ph_radio_mode');
+      return saved === 'night' ? 'night' : 'morning';
+    } catch (e) {
+      console.error('Failed to read mode from local storage', e);
+      return 'morning';
+    }
+  });
   
   // Initialize favorites from localStorage
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -32,6 +40,14 @@ export default function App(): React.ReactElement {
       return [];
     }
   });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('ph_radio_mode', mode);
+    } catch (e) {
+      console.error('Failed to save mode to local storage', e);
+    }
+  }, [mode]);
 
   useEffect(() => {
     const loadStations = async () => {
@@ -99,15 +115,15 @@ export default function App(): React.ReactElement {
         if (activeCategory === 'Favorites') return favorites.includes(station.stationuuid);
         
         const categoryKeywords = CATEGORIES.find(c => c.name === activeCategory)?.keywords || [];
-        const stationTags = station.tags.toLowerCase().split(',');
+        const stationTags = (station.tags || '').toLowerCase().split(',');
         return categoryKeywords.some(keyword => stationTags.includes(keyword));
       })
       .filter(station => {
         const query = searchQuery.toLowerCase();
         return (
           station.name.toLowerCase().includes(query) ||
-          station.tags.toLowerCase().includes(query) ||
-          station.language.toLowerCase().includes(query)
+          (station.tags || '').toLowerCase().includes(query) ||
+          (station.language || '').toLowerCase().includes(query)
         );
       });
   }, [stations, searchQuery, activeCategory, favorites]);
