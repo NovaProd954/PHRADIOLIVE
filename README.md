@@ -18,3 +18,8 @@ View your app in AI Studio: https://ai.studio/apps/drive/14RTuj7EcLhHN0BgWAfflW_
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+## Android background playback support
+
+- Install the app from Chrome (Add to Home screen) for best background audio behavior.
+- The app now includes a Web App Manifest + Service Worker and Media Session play/pause handlers for Android lock screen and notification controls.
