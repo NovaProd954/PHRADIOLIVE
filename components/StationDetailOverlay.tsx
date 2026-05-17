@@ -12,6 +12,7 @@ import { RadioIcon } from './icons/RadioIcon';
 import { CastIcon } from './icons/CastIcon';
 
 interface StationDetailOverlayProps {
+  mode: 'morning' | 'night';
   station: Station;
   onClose: () => void;
   isPlaying: boolean;
@@ -72,7 +73,7 @@ const StationLogo: React.FC<StationLogoProps> = ({ station, className, isPlaying
     const containerClass = className || "w-16 h-16";
 
     return (
-        <div className={`${containerClass} bg-white flex items-center justify-center overflow-hidden shadow-2xl`}>
+        <div className={`${containerClass} bg-white/85 backdrop-blur-lg flex items-center justify-center overflow-hidden shadow-2xl rounded-[2rem] border border-white/60`}>
             {isLoading ? (
                 <div className="w-full h-full bg-slate-50 animate-pulse"></div>
             ) : !imgError && station.favicon ? (
@@ -88,7 +89,7 @@ const StationLogo: React.FC<StationLogoProps> = ({ station, className, isPlaying
     );
 };
 
-const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ station, onClose, isPlaying, onPlayPause, volume, setVolume, isFavorite, onToggleFavorite }) => {
+const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, station, onClose, isPlaying, onPlayPause, volume, setVolume, isFavorite, onToggleFavorite }) => {
   
   // Prevent body scroll when overlay is open
   useEffect(() => {
@@ -125,12 +126,12 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ station, on
 
   return (
     <div 
-        className="fixed inset-0 z-50 flex flex-col font-sans text-white animate-fade-in"
+        className={`fixed inset-0 z-50 flex flex-col font-sans animate-fade-in ${mode === 'morning' ? 'text-slate-900' : 'text-white'}`}
         role="dialog"
         aria-modal="true"
     >
         {/* Background Layer */}
-        <div className="absolute inset-0 z-0 overflow-hidden bg-black">
+        <div className={`absolute inset-0 z-0 overflow-hidden ${mode === 'morning' ? 'bg-white' : 'bg-black'}`}>
             {station.favicon && (
                 <img 
                     src={station.favicon} 
@@ -138,7 +139,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ station, on
                     className="w-full h-full object-cover blur-[80px] opacity-40 scale-125 transition-opacity duration-1000" 
                 />
             )}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+            <div className={`absolute inset-0 backdrop-blur-sm ${mode === 'morning' ? 'bg-white/55' : 'bg-black/45'}`}></div>
         </div>
 
         {/* Content Layer */}

@@ -2,11 +2,12 @@ import React from 'react';
 import { CATEGORIES } from '../constants';
 
 interface CategoryFiltersProps {
+  mode: 'morning' | 'night';
   activeCategory: string;
   setActiveCategory: (category: string) => void;
 }
 
-const CategoryFilters: React.FC<CategoryFiltersProps> = ({ activeCategory, setActiveCategory }) => {
+const CategoryFilters: React.FC<CategoryFiltersProps> = ({ activeCategory, setActiveCategory, mode }) => {
   return (
     <div className="flex flex-wrap items-center justify-center gap-2.5">
       {CATEGORIES.map(({ name }) => {
@@ -18,8 +19,8 @@ const CategoryFilters: React.FC<CategoryFiltersProps> = ({ activeCategory, setAc
             className={`
                 px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 select-none
                 ${isActive 
-                    ? 'bg-gradient-to-r from-ph-blue to-ph-blue text-white shadow-md shadow-blue-900/10 scale-105' 
-                    : 'bg-white text-slate-600 border border-slate-100 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-950/20 scale-105' 
+                    : mode === 'morning' ? 'bg-white/60 text-slate-700 border border-white/50 hover:bg-white' : 'bg-white/10 text-white/80 border border-white/15 hover:bg-white/20'
                 }
             `}
             >

@@ -6,13 +6,16 @@ import { SpinnerIcon } from './icons/SpinnerIcon';
 import { RadioIcon } from './icons/RadioIcon';
 
 interface AudioPlayerProps {
+  mode: 'morning' | 'night';
   station: Station;
   isPlaying: boolean;
   onPlayPause: () => void;
+  onPlay: () => void;
+  onPause: () => void;
   volume: number;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPause, volume }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onPlayPause, onPlay, onPause, volume }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isBuffering, setIsBuffering] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,11 +44,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
       });
 
       // Update action handlers
-      navigator.mediaSession.setActionHandler('play', onPlayPause);
-      navigator.mediaSession.setActionHandler('pause', onPlayPause);
-      navigator.mediaSession.setActionHandler('stop', onPlayPause);
+      navigator.mediaSession.setActionHandler('play', onPlay);
+      navigator.mediaSession.setActionHandler('pause', onPause);
+      navigator.mediaSession.setActionHandler('stop', onPause);
     }
-  }, [station, onPlayPause]);
+  }, [station, onPlay, onPause]);
 
   useEffect(() => {
     if ('mediaSession' in navigator) {
@@ -110,7 +113,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
   
   return (
     <div className="fixed bottom-4 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-4xl bg-white/90 backdrop-blur-xl border border-white/50 shadow-glow rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl">
+      <div className={`pointer-events-auto w-full max-w-4xl backdrop-blur-2xl border shadow-glow rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl ${mode === 'morning' ? 'bg-white/60 border-white/50' : 'bg-black/45 border-white/15'}`}>
             
             {/* Station Info */}
             <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
@@ -122,10 +125,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                     )}
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
-                    <p className="font-heading font-bold text-slate-800 truncate text-sm sm:text-base leading-tight">
+                    <p className={`font-heading font-bold truncate text-sm sm:text-base leading-tight ${mode === 'morning' ? 'text-slate-800' : 'text-white'}`}>
                         {station.name}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 truncate mt-0.5">
+                    <div className={`flex items-center gap-2 text-xs truncate mt-0.5 ${mode === 'morning' ? 'text-slate-500' : 'text-white/70'}`}>
                          {isBuffering ? (
                              <span className="text-ph-blue font-medium flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-ph-blue animate-pulse"></span>
@@ -152,7 +155,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                     onClick={onPlayPause}
                     className={`
                         w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95
-                        bg-gradient-to-br from-ph-blue to-ph-red text-white border-2 border-white/20
+                        bg-emerald-500 text-white border-2 border-white/20
                     `}
                 >
                     {isBuffering ? (
@@ -165,7 +168,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                 </button>
             </div>
       </div>
-      <audio ref={audioRef} preload="auto" hidden crossOrigin="anonymous" />
+      <audio ref={audioRef} preload="auto" playsInline hidden crossOrigin="anonymous" />
     </div>
   );
 };
