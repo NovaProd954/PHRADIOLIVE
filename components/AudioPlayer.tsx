@@ -6,16 +6,35 @@ import { SpinnerIcon } from './icons/SpinnerIcon';
 import { RadioIcon } from './icons/RadioIcon';
 
 interface AudioPlayerProps {
+  mode: 'morning' | 'night';
   station: Station;
   isPlaying: boolean;
   onPlayPause: () => void;
+  onPlay: () => void;
+  onPause: () => void;
   volume: number;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPause, volume }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onPlayPause, onPlay, onPause, volume }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isBuffering, setIsBuffering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const getAudioErrorMessage = (audioError: MediaError | null): string => {
+    if (!audioError) return "Unavailable";
+    switch (audioError.code) {
+      case MediaError.MEDIA_ERR_ABORTED:
+        return "Playback aborted";
+      case MediaError.MEDIA_ERR_NETWORK:
+        return "Network issue";
+      case MediaError.MEDIA_ERR_DECODE:
+        return "Stream decode error";
+      case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+        return "Stream not supported";
+      default:
+        return "Unavailable";
+    }
+  };
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
@@ -41,11 +60,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
       });
 
       // Update action handlers
-      navigator.mediaSession.setActionHandler('play', onPlayPause);
-      navigator.mediaSession.setActionHandler('pause', onPlayPause);
-      navigator.mediaSession.setActionHandler('stop', onPlayPause);
+      navigator.mediaSession.setActionHandler('play', onPlay);
+      navigator.mediaSession.setActionHandler('pause', onPause);
+      navigator.mediaSession.setActionHandler('stop', onPause);
     }
-  }, [station, onPlayPause]);
+  }, [station, onPlay, onPause]);
 
   useEffect(() => {
     if ('mediaSession' in navigator) {
@@ -64,20 +83,34 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
     };
     const handleError = (e: Event) => {
         setIsBuffering(false);
-        setError("Unavailable");
+        setError(getAudioErrorMessage(audio.error));
+        onPause();
         console.error("Audio Error:", e);
+    };
+
+    const handleStalled = () => {
+      setIsBuffering(true);
+    };
+
+    const handleEnded = () => {
+      setIsBuffering(false);
+      onPause();
     };
 
     audio.addEventListener('waiting', handleWaiting);
     audio.addEventListener('playing', handlePlaying);
     audio.addEventListener('error', handleError);
+    audio.addEventListener('stalled', handleStalled);
+    audio.addEventListener('ended', handleEnded);
 
     return () => {
       audio.removeEventListener('waiting', handleWaiting);
       audio.removeEventListener('playing', handlePlaying);
       audio.removeEventListener('error', handleError);
+      audio.removeEventListener('stalled', handleStalled);
+      audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [onPause]);
   
   useEffect(() => {
     if (audioRef.current) {
@@ -98,23 +131,23 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
             if (playPromise !== undefined) {
                 playPromise.catch((e) => {
                     console.error("Playback failed:", e);
-                    setError("Error");
-                    // If play fails (e.g. autoplay policy), ensure UI reflects paused state if needed
+                    setError("Playback blocked");
+                    onPause();
                 });
             }
         } else {
             audioRef.current.pause();
         }
     }
-  }, [station, isPlaying]);
+  }, [station, isPlaying, onPause]);
   
   return (
     <div className="fixed bottom-4 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-4xl bg-white/90 backdrop-blur-xl border border-white/50 shadow-glow rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl">
+      <div className={`pointer-events-auto w-full max-w-4xl backdrop-blur-2xl border shadow-glow p-3 sm:p-4 flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl ${mode === 'morning' ? 'bg-white/90 border-ph-blue shadow-[8px_8px_0_rgba(0,56,168,0.18)]' : 'bg-slate-950/90 border-ph-yellow shadow-[8px_8px_0_rgba(252,209,22,0.16)]'}`}>
             
             {/* Station Info */}
             <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 bg-white border-2 border-ph-blue/30 flex-shrink-0 flex items-center justify-center overflow-hidden">
                     {!imgError && station.favicon ? (
                         <img src={station.favicon} alt={station.name} className="w-full h-full object-contain p-1" onError={() => setImgError(true)} />
                     ) : (
@@ -122,10 +155,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                     )}
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
-                    <p className="font-heading font-bold text-slate-800 truncate text-sm sm:text-base leading-tight">
+                    <p className={`font-heading font-bold truncate text-sm sm:text-base leading-tight ${mode === 'morning' ? 'text-slate-800' : 'text-white'}`}>
                         {station.name}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 truncate mt-0.5">
+                    <div className={`flex items-center gap-2 text-xs truncate mt-0.5 ${mode === 'morning' ? 'text-slate-500' : 'text-white/70'}`}>
                          {isBuffering ? (
                              <span className="text-ph-blue font-medium flex items-center gap-1.5">
                                 <span className="w-1.5 h-1.5 rounded-full bg-ph-blue animate-pulse"></span>
@@ -134,10 +167,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                          ) : error ? (
                              <span className="text-ph-red font-medium">{error}</span>
                          ) : (
-                             <span className="flex items-center gap-1.5 text-green-600 font-medium">
+                             <span className="flex items-center gap-1.5 text-ph-blue font-medium">
                                 <span className="relative flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ph-yellow opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-ph-red"></span>
                                 </span>
                                 Live
                              </span>
@@ -151,8 +184,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                 <button
                     onClick={onPlayPause}
                     className={`
-                        w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95
-                        bg-gradient-to-br from-ph-blue to-ph-red text-white border-2 border-white/20
+                        w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95
+                        bg-ph-red text-white border-2 border-ph-yellow
                     `}
                 >
                     {isBuffering ? (
@@ -165,7 +198,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ station, isPlaying, onPlayPau
                 </button>
             </div>
       </div>
-      <audio ref={audioRef} preload="auto" hidden crossOrigin="anonymous" />
+      <audio ref={audioRef} preload="auto" playsInline hidden crossOrigin="anonymous" />
     </div>
   );
 };

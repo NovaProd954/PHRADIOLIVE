@@ -16,15 +16,15 @@ const StationCard: React.FC<StationCardProps> = ({ station, onSelect, isActive, 
   const [imgError, setImgError] = useState(false);
 
   // Clean and limit tags for display
-  const primaryTag = station.tags.split(',')[0]?.trim() || 'Radio';
+  const primaryTag = (station.tags || '').split(',')[0]?.trim() || 'Radio';
 
   return (
     <div
       className={`
-        group relative flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer
+        group relative flex flex-col bg-white/95 overflow-hidden transition-all duration-300 cursor-pointer border-2
         ${isActive 
-            ? 'ring-2 ring-ph-blue shadow-lg shadow-ph-blue/5' 
-            : 'border border-slate-100 shadow-soft hover:shadow-lg hover:-translate-y-1 hover:border-slate-200'
+            ? 'border-ph-red shadow-[8px_8px_0_rgba(0,56,168,0.25)]' 
+            : 'border-ph-blue/25 shadow-[6px_6px_0_rgba(0,0,0,0.08)] hover:shadow-[8px_8px_0_rgba(252,209,22,0.45)] hover:-translate-y-1 hover:border-ph-blue'
         }
       `}
       onClick={() => onSelect(station)}
@@ -32,14 +32,14 @@ const StationCard: React.FC<StationCardProps> = ({ station, onSelect, isActive, 
       {/* Top Image Section */}
       <div className="relative aspect-square w-full p-6 bg-white flex items-center justify-center">
         {/* Subtle background for logo area */}
-        <div className="absolute inset-0 bg-slate-50 opacity-50"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,56,168,0.08)_0_33%,rgba(252,209,22,0.12)_33%_66%,rgba(206,17,38,0.08)_66%)] opacity-100"></div>
 
         {/* Favorite Button (Top Right) */}
         <button 
             className={`
-                absolute top-3 right-3 p-1.5 rounded-full z-20 transition-all duration-200
+                absolute top-3 right-3 p-1.5 z-20 border-2 border-white transition-all duration-200
                 ${isFavorite 
-                    ? 'text-ph-yellow bg-yellow-50 opacity-100' 
+                    ? 'text-ph-yellow bg-ph-blue opacity-100' 
                     : 'text-slate-300 bg-transparent opacity-0 group-hover:opacity-100 hover:bg-slate-100 hover:text-ph-yellow'
                 }
             `}
@@ -75,13 +75,13 @@ const StationCard: React.FC<StationCardProps> = ({ station, onSelect, isActive, 
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col p-4 pt-3 border-t border-slate-50 bg-white flex-grow">
+      <div className="flex flex-col p-4 pt-3 border-t-2 border-ph-blue/15 bg-white flex-grow">
         <div className="mb-1 flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded">
+            <span className="text-[10px] font-black uppercase tracking-wider text-ph-blue bg-ph-yellow/40 px-2 py-1 border border-ph-yellow">
                 {primaryTag}
             </span>
         </div>
-        <h3 className={`font-heading font-bold text-sm leading-tight line-clamp-2 mb-1 ${isActive ? 'text-ph-blue' : 'text-slate-800'}`}>
+        <h3 className={`font-heading font-bold text-sm leading-tight line-clamp-2 mb-1 ${isActive ? 'text-ph-red' : 'text-slate-800'}`}>
             {station.name}
         </h3>
         <p className="text-xs text-slate-500 mt-auto truncate">

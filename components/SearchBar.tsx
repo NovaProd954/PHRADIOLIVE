@@ -2,11 +2,12 @@ import React from 'react';
 import { SearchIcon } from './icons/SearchIcon';
 
 interface SearchBarProps {
+  mode: 'morning' | 'night';
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery, mode }) => {
   return (
     <div className="relative group">
       <div className="relative flex items-center">
@@ -18,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery }) =>
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Find a station..."
-            className="w-full pl-12 pr-4 py-3.5 bg-white text-slate-800 rounded-2xl shadow-soft border border-transparent focus:border-ph-blue/20 focus:ring-4 focus:ring-ph-blue/5 focus:outline-none placeholder-slate-400 font-medium transition-all duration-300 hover:shadow-md"
+            className={`w-full pl-12 pr-4 py-3.5 border-2 focus:ring-4 focus:ring-ph-yellow/30 focus:outline-none placeholder-slate-400 font-medium transition-all duration-300 ${mode === 'morning' ? 'bg-white/85 text-slate-900 border-ph-blue/60 shadow-[6px_6px_0_rgba(0,56,168,0.12)] focus:border-ph-red' : 'bg-slate-950/80 text-white border-ph-yellow/70 shadow-[6px_6px_0_rgba(252,209,22,0.12)] focus:border-ph-red'}`} 
             aria-label="Search stations"
         />
       </div>
