@@ -11,7 +11,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery, mode
   return (
     <div className="relative group">
       <div className="relative flex items-center">
-        <div className="absolute left-4 text-slate-400 group-focus-within:text-ph-blue transition-colors duration-300">
+        <div className="absolute left-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors duration-300">
              <SearchIcon className="h-5 w-5" />
         </div>
         <input
