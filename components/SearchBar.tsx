@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchQuery, setSearchQuery, mode
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Find a station..."
-            className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border focus:ring-4 focus:ring-emerald-500/10 focus:outline-none placeholder-slate-400 font-medium transition-all duration-300 ${mode === 'morning' ? 'bg-white/55 text-slate-800 border-white/50 shadow-soft focus:border-emerald-400/30' : 'bg-white/10 text-white border-white/20 focus:border-emerald-400/40'}`} 
+            className={`w-full pl-12 pr-4 py-3.5 border-2 focus:ring-4 focus:ring-ph-yellow/30 focus:outline-none placeholder-slate-400 font-medium transition-all duration-300 ${mode === 'morning' ? 'bg-white/85 text-slate-900 border-ph-blue/60 shadow-[6px_6px_0_rgba(0,56,168,0.12)] focus:border-ph-red' : 'bg-slate-950/80 text-white border-ph-yellow/70 shadow-[6px_6px_0_rgba(252,209,22,0.12)] focus:border-ph-red'}`} 
             aria-label="Search stations"
         />
       </div>

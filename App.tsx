@@ -129,21 +129,21 @@ export default function App(): React.ReactElement {
   }, [stations, searchQuery, activeCategory, favorites]);
 
   return (
-    <div className="min-h-screen font-sans selection:bg-emerald-500/20">
+    <div className="min-h-screen font-sans selection:bg-ph-yellow/60">
         {/* Background Layer (Z-Index: 0) */}
-        <div className={`fixed inset-0 z-0 w-full h-full overflow-hidden ${mode === 'morning' ? 'bg-white' : 'bg-black'}`}>
+        <div className={`fixed inset-0 z-0 w-full h-full overflow-hidden ${mode === 'morning' ? 'bg-white' : 'bg-slate-950'}`}>
             {/* The Background Image - Full Opacity with Fallback */}
             {!bgError && (
               <img 
                   src="/background.webp" 
                   alt="Background" 
-                  className={`w-full h-full object-cover object-center opacity-100 transition-opacity duration-500 ${mode === 'night' ? 'brightness-50 saturate-75' : ''}`} 
+                  className={`w-full h-full object-cover object-center opacity-100 transition-opacity duration-500 ${mode === 'night' ? 'brightness-40 saturate-90 contrast-110' : 'contrast-105'}`} 
                   onError={() => setBgError(true)}
               />
             )}
             
             {/* Minimal Overlay - just enough to ensure text doesn't blend if image is busy */}
-            <div className={`absolute inset-0 ${bgError ? (mode === 'morning' ? 'bg-slate-50' : 'bg-black') : (mode === 'morning' ? 'bg-white/25 backdrop-blur-[3px]' : 'bg-black/45 backdrop-blur-[3px]')}`}></div>
+            <div className={`absolute inset-0 ${bgError ? (mode === 'morning' ? 'bg-slate-50' : 'bg-black') : (mode === 'morning' ? 'bg-white/35 backdrop-blur-[2px]' : 'bg-slate-950/60 backdrop-blur-[2px]')}`}></div>
         </div>
 
         {/* Content Layer (Z-Index: 10) */}
@@ -170,10 +170,10 @@ export default function App(): React.ReactElement {
                 {/* Main Content */}
                 <div className="pb-32">
                     <div className="flex items-center justify-between mb-6 px-1">
-                        <h2 className={`text-xl font-heading font-semibold backdrop-blur-xl inline-block px-4 py-1.5 rounded-xl border shadow-sm ${mode === 'morning' ? 'text-emerald-900 bg-white/40 border-white/40' : 'text-white bg-white/10 border-white/20'}`}>
+                        <h2 className={`text-xl font-heading font-black uppercase tracking-tight backdrop-blur-xl inline-block px-4 py-2 border-2 shadow-[5px_5px_0_rgba(0,0,0,0.14)] ${mode === 'morning' ? 'text-white bg-ph-blue/90 border-ph-yellow' : 'text-ph-yellow bg-ph-blue/80 border-ph-red'}`}>
                             {activeCategory === 'All' ? 'All Stations' : activeCategory}
                         </h2>
-                        <span className={`text-sm font-medium backdrop-blur px-3 py-1 rounded-full shadow-sm border ${mode === 'morning' ? 'text-slate-600 bg-white/70 border-slate-100' : 'text-white/80 bg-white/10 border-white/20'}`}>
+                        <span className={`text-sm font-black uppercase backdrop-blur px-3 py-2 shadow-[4px_4px_0_rgba(0,0,0,0.12)] border-2 ${mode === 'morning' ? 'text-ph-red bg-white/85 border-ph-red/40' : 'text-white bg-slate-950/80 border-ph-yellow/70'}`}>
                             {filteredStations.length} Stations
                         </span>
                     </div>

@@ -17,10 +17,10 @@ const CategoryFilters: React.FC<CategoryFiltersProps> = ({ activeCategory, setAc
             key={name}
             onClick={() => setActiveCategory(name)}
             className={`
-                px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 select-none
+                px-5 py-2 text-sm font-black uppercase tracking-wide border-2 transition-all duration-200 select-none
                 ${isActive 
-                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-950/20 scale-105' 
-                    : mode === 'morning' ? 'bg-white/60 text-slate-700 border border-white/50 hover:bg-white' : 'bg-white/10 text-white/80 border border-white/15 hover:bg-white/20'
+                    ? 'bg-ph-blue text-white border-ph-yellow shadow-[4px_4px_0_rgba(206,17,38,0.35)] scale-105' 
+                    : mode === 'morning' ? 'bg-white/85 text-ph-blue border-ph-blue/30 hover:border-ph-red hover:bg-ph-yellow/30' : 'bg-slate-950/75 text-white/85 border-white/20 hover:border-ph-yellow hover:bg-ph-blue/40'
                 }
             `}
             >

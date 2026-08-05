@@ -36,7 +36,7 @@ const LiveClock: React.FC<{ mode: 'morning' | 'night' }> = ({ mode }) => {
   const ampm = time.getHours() >= 12 ? 'PM' : 'AM';
 
   return (
-    <div className={`flex items-baseline font-heading select-none ${mode === 'morning' ? 'text-slate-900' : 'text-white'}`}>
+    <div className={`flex items-baseline font-heading select-none ${mode === 'morning' ? 'text-ph-blue' : 'text-white'}`}>
       <span className="text-6xl sm:text-7xl font-bold tracking-tighter">{hours}:{minutes}</span>
       <span className="text-2xl sm:text-3xl font-medium ml-1">{ampm}</span>
     </div>
@@ -73,7 +73,7 @@ const StationLogo: React.FC<StationLogoProps> = ({ station, className, isPlaying
     const containerClass = className || "w-16 h-16";
 
     return (
-        <div className={`${containerClass} bg-white/85 backdrop-blur-lg flex items-center justify-center overflow-hidden shadow-2xl rounded-[2rem] border border-white/60`}>
+        <div className={`${containerClass} bg-white/90 backdrop-blur-lg flex items-center justify-center overflow-hidden shadow-[14px_14px_0_rgba(0,56,168,0.25)] border-4 border-ph-yellow`}>
             {isLoading ? (
                 <div className="w-full h-full bg-slate-50 animate-pulse"></div>
             ) : !imgError && station.favicon ? (
@@ -129,12 +129,12 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
 
   return (
     <div 
-        className={`fixed inset-0 z-50 flex flex-col font-sans animate-fade-in ${mode === 'morning' ? 'text-slate-900' : 'text-white'}`}
+        className={`fixed inset-0 z-50 flex flex-col font-sans animate-fade-in ${mode === 'morning' ? 'text-ph-blue' : 'text-white'}`}
         role="dialog"
         aria-modal="true"
     >
         {/* Background Layer */}
-        <div className={`absolute inset-0 z-0 overflow-hidden ${mode === 'morning' ? 'bg-white' : 'bg-black'}`}>
+        <div className={`absolute inset-0 z-0 overflow-hidden ${mode === 'morning' ? 'bg-white' : 'bg-slate-950'}`}>
             {station.favicon && (
                 <img 
                     src={station.favicon} 
@@ -159,7 +159,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                 <div className="absolute left-0 right-0 top-0 flex justify-center pointer-events-none">
                      <button 
                         onClick={onClose}
-                        className={`pointer-events-auto transition-transform duration-300 hover:rotate-90 hover:scale-110 active:scale-95 ${mode === 'morning' ? 'text-slate-700/80 hover:text-slate-900' : 'text-white/80 hover:text-white'}`}
+                        className={`pointer-events-auto transition-transform duration-300 hover:rotate-90 hover:scale-110 active:scale-95 ${mode === 'morning' ? 'text-ph-blue hover:text-ph-red' : 'text-white/80 hover:text-ph-yellow'}`}
                         aria-label="Close"
                     >
                         <CloseIcon className="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-md" />
@@ -181,7 +181,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                         <h2 className={`font-heading font-bold text-2xl sm:text-3xl md:text-4xl leading-tight drop-shadow-lg ${mode === 'morning' ? 'text-slate-900' : 'text-white'}`}>
                             {station.name}
                         </h2>
-                        <p className={`text-lg font-medium ${mode === 'morning' ? 'text-slate-700' : 'text-white/70'}`}>
+                        <p className={`text-lg font-medium ${mode === 'morning' ? 'text-ph-red' : 'text-white/70'}`}>
                             {station.state || station.country || 'Philippines'} 
                             {(station.tags || '').toLowerCase().includes('fm') ? ' - FM Radio' : ''}
                         </p>
@@ -189,17 +189,17 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
 
                     {/* Action Icons */}
                     <div className="flex items-center gap-6 sm:gap-8">
-                        <button className={`transition-colors p-2 ${mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`} title="Cast to device">
+                        <button className={`transition-colors p-2 ${mode === 'morning' ? 'text-ph-blue hover:text-ph-red' : 'text-white/60 hover:text-ph-yellow'}`} title="Cast to device">
                             <CastIcon className="w-6 h-6 sm:w-7 sm:h-7" />
                         </button>
                         
-                        <button className={`transition-colors p-2 ${mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`} title="Notifications">
+                        <button className={`transition-colors p-2 ${mode === 'morning' ? 'text-ph-blue hover:text-ph-red' : 'text-white/60 hover:text-ph-yellow'}`} title="Notifications">
                             <BellIcon className="w-7 h-7 sm:w-8 sm:h-8" />
                         </button>
 
                         <button 
                             onClick={onPlayPause}
-                            className={`group relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 transition-all active:scale-95 ${mode === 'morning' ? 'border-slate-500/30 hover:border-slate-700 hover:bg-white/20' : 'border-white/30 hover:border-white hover:bg-white/10'}`}
+                            className={`group relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 transition-all active:scale-95 ${mode === 'morning' ? 'border-ph-blue bg-white/70 hover:border-ph-red hover:bg-ph-yellow/30 shadow-[6px_6px_0_rgba(0,56,168,0.18)]' : 'border-ph-yellow hover:border-ph-red hover:bg-ph-blue/30 shadow-[6px_6px_0_rgba(252,209,22,0.16)]'}`}
                         >
                             {/* Animated ring effect for playing state */}
                             {isPlaying && (
@@ -214,14 +214,14 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
 
                         <button 
                             onClick={onToggleFavorite}
-                            className={`p-2 transition-colors ${isFavorite ? 'text-ph-yellow' : mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`}
+                            className={`p-2 transition-colors ${isFavorite ? 'text-ph-yellow' : mode === 'morning' ? 'text-ph-blue hover:text-ph-red' : 'text-white/60 hover:text-ph-yellow'}`}
                         >
                             <StarIcon className={`w-7 h-7 sm:w-8 sm:h-8 ${isFavorite ? 'fill-current' : ''}`} />
                         </button>
 
                         <button 
                             onClick={handleShare}
-                            className={`transition-colors p-2 ${mode === 'morning' ? 'text-slate-600 hover:text-slate-900' : 'text-white/60 hover:text-white'}`} 
+                            className={`transition-colors p-2 ${mode === 'morning' ? 'text-ph-blue hover:text-ph-red' : 'text-white/60 hover:text-ph-yellow'}`} 
                             title="Share"
                         >
                             <ShareIcon className="w-7 h-7 sm:w-8 sm:h-8" />
@@ -229,7 +229,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                     </div>
 
                     {/* Volume Slider */}
-                    <div className={`w-full max-w-sm flex items-center gap-4 ${mode === 'morning' ? 'text-slate-700' : 'text-white/80'}`}>
+                    <div className={`w-full max-w-sm flex items-center gap-4 ${mode === 'morning' ? 'text-ph-blue' : 'text-white/80'}`}>
                         <VolumeMuteIcon className="w-6 h-6 flex-shrink-0" />
                         <div className="relative flex-grow h-10 flex items-center">
                             <input 
@@ -246,7 +246,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                                     [&::-webkit-slider-thumb]:w-4
                                     [&::-webkit-slider-thumb]:h-4
                                     [&::-webkit-slider-thumb]:rounded-full
-                                    [&::-webkit-slider-thumb]:bg-emerald-500
+                                    [&::-webkit-slider-thumb]:bg-ph-red
                                     [&::-webkit-slider-thumb]:shadow-lg
                                     [&::-webkit-slider-runnable-track]:bg-transparent
                                     [&::-webkit-slider-thumb]:transition-transform
@@ -268,7 +268,7 @@ const StationDetailOverlay: React.FC<StationDetailOverlayProps> = ({ mode, stati
                     />
                     
                     {/* Visual dash indicator from reference image */}
-                    <div className={`w-8 h-1 rounded-full mt-12 hidden md:block ${mode === 'morning' ? 'bg-slate-300' : 'bg-white/40'}`}></div>
+                    <div className={`w-8 h-1 rounded-full mt-12 hidden md:block ${mode === 'morning' ? 'bg-ph-yellow' : 'bg-ph-yellow/70'}`}></div>
                 </div>
 
             </div>

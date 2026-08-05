@@ -143,11 +143,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
   
   return (
     <div className="fixed bottom-4 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none">
-      <div className={`pointer-events-auto w-full max-w-4xl backdrop-blur-2xl border shadow-glow rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl ${mode === 'morning' ? 'bg-white/60 border-white/50' : 'bg-black/45 border-white/15'}`}>
+      <div className={`pointer-events-auto w-full max-w-4xl backdrop-blur-2xl border shadow-glow p-3 sm:p-4 flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-xl ${mode === 'morning' ? 'bg-white/90 border-ph-blue shadow-[8px_8px_0_rgba(0,56,168,0.18)]' : 'bg-slate-950/90 border-ph-yellow shadow-[8px_8px_0_rgba(252,209,22,0.16)]'}`}>
             
             {/* Station Info */}
             <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 bg-white border-2 border-ph-blue/30 flex-shrink-0 flex items-center justify-center overflow-hidden">
                     {!imgError && station.favicon ? (
                         <img src={station.favicon} alt={station.name} className="w-full h-full object-contain p-1" onError={() => setImgError(true)} />
                     ) : (
@@ -167,10 +167,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
                          ) : error ? (
                              <span className="text-ph-red font-medium">{error}</span>
                          ) : (
-                             <span className="flex items-center gap-1.5 text-green-600 font-medium">
+                             <span className="flex items-center gap-1.5 text-ph-blue font-medium">
                                 <span className="relative flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ph-yellow opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-ph-red"></span>
                                 </span>
                                 Live
                              </span>
@@ -184,8 +184,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ mode, station, isPlaying, onP
                 <button
                     onClick={onPlayPause}
                     className={`
-                        w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95
-                        bg-emerald-500 text-white border-2 border-white/20
+                        w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95
+                        bg-ph-red text-white border-2 border-ph-yellow
                     `}
                 >
                     {isBuffering ? (

@@ -4,7 +4,7 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#10b981",
+  "theme_color": "#0038A8",
   "description": "Listen to Philippine radio stations live.",
   "icons": [
     {
